@@ -48,6 +48,7 @@ public class ShortestPathsTest {
         // sample assertion statements:
         assertTrue(true);
         assertEquals(2+2, 4);
+        g.report();
     }
 
     /** Minimal test case to check the path from A to B in Simple0.txt */
@@ -65,6 +66,44 @@ public class ShortestPathsTest {
         assertEquals(abPath.getLast(),  b);
         assertEquals(sp.shortestPathLength(b), 1.0, 1e-6);
     }
+
+    @Test
+    public void test02ReachableNodes0() {
+        Graph g = loadBasicGraph("Simple0.txt");
+        g.report();
+        Object[] reachableNodes = g.getNodes().values().toArray();
+        ShortestPaths sp = new ShortestPaths();
+        sp.compute(g.getNode("A"));
+
+        assertEquals(reachableNodes.length, 3);
+        assertEquals(((Node) (reachableNodes[0])).getId(), "A");
+        assertEquals(((Node) (reachableNodes[1])).getId(), "B");
+        assertEquals(((Node) (reachableNodes[2])).getId(), "C");
+        assertEquals(sp.shortestPathLength(((Node) (reachableNodes[0]))), 0.0, 0.0000000001);
+        assertEquals(sp.shortestPathLength(((Node) (reachableNodes[1]))), 1.0, 0.0000000001);
+        assertEquals(sp.shortestPathLength(((Node) (reachableNodes[2]))), 2.0, 0.0000000001);
+    }
+
+    @Test
+    public void test03SameNode0() {
+        Graph g = loadBasicGraph("Simple0.txt");
+        g.report();
+        ShortestPaths sp = new ShortestPaths();
+        sp.compute(g.getNode("A"));
+        assertEquals(sp.shortestPathLength(g.getNode("A")), 0.0, 0.0000000001);
+        assertEquals(sp.shortestPath(g.getNode("A")).size(), 1);
+    }
+
+    @Test
+    public void test04Unreachable2() {
+        Graph g = loadBasicGraph("Simple2.txt");
+        g.report();
+        ShortestPaths sp = new ShortestPaths();
+        sp.compute(g.getNode("A"));
+        assertEquals(sp.shortestPathLength(g.getNode("D")), Double.POSITIVE_INFINITY, 0.0000000001);
+        assertEquals(sp.shortestPath(g.getNode("D")), null);
+    }
+    
 
     /* Pro tip: unless you include @Test on the line above your method header,
      * gradle test will not run it! This gets me every time. */
